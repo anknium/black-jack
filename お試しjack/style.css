@@ -1,0 +1,9 @@
+body { background-color: #1a472a; color: white; font-family: sans-serif; }
+.casino-table { text-align: center; padding: 50px; }
+.hand { display: flex; justify-content: center; gap: 10px; margin: 20px; }
+.card {
+    width: 70px; height: 100px; background: white; color: black;
+    border-radius: 8px; line-height: 100px; font-weight: bold; font-size: 20px;
+}
+.card.back { background: #c0392b; border: 2px solid white; }
+button { padding: 10px 20px; margin: 5px; cursor: pointer; }

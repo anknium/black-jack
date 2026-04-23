@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Blackjack JS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="casino-table">
+        <h1 id="message">ベットして開始してください</h1>
+
+        <div class="area">
+            <h3>Dealer (Score: <span id="dealer-score">?</span>)</h3>
+            <div id="dealer-hand" class="hand"></div>
+        </div>
+
+        <div class="area">
+            <h3>Player (Score: <span id="player-score">0</span>)</h3>
+            <div id="player-hand" class="hand"></div>
+        </div>
+
+        <div class="controls">
+            <button onclick="startGame()">ゲーム開始</button>
+            <button id="hit-btn" onclick="hit()" disabled>ヒット</button>
+            <button id="stand-btn" onclick="stand()" disabled>スタンド</button>
+            <p>所持チップ: <span id="chips">1000</span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
