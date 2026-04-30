@@ -50,11 +50,84 @@ confirmButton.addEventListener('click', function() {
     startGame(betAmount);
 });
 
-// ゲーム開始関数（今後実装）
+const settingsButton = document.getElementById('settingsButton');
+const hitButton = document.getElementById('hitButton');
+const standButton = document.getElementById('standButton');
+const dealerScore = document.getElementById('dealerScore');
+const playerScore = document.getElementById('playerScore');
+const playerName = document.getElementById('playerName');
+const dealerCardFront = document.getElementById('dealerCardFront');
+const dealerCardBack = document.getElementById('dealerCardBack');
+const playerCardFront = document.getElementById('playerCardFront');
+const playerCardBack = document.getElementById('playerCardBack');
+
+const cardPool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
+let playerHand = [];
+let dealerHand = [];
+
+function randomCard() {
+    const value = cardPool[Math.floor(Math.random() * cardPool.length)];
+    return value;
+}
+
+function cardValue(card) {
+    if (card === 'J' || card === 'Q' || card === 'K') {
+        return 10;
+    }
+    if (card === 'A') {
+        return 11;
+    }
+    return Number(card);
+}
+
+function calculateTotal(hand) {
+    let total = hand.reduce((sum, card) => sum + cardValue(card), 0);
+    let aceCount = hand.filter(card => card === 'A').length;
+
+    while (total > 21 && aceCount > 0) {
+        total -= 10;
+        aceCount -= 1;
+    }
+    return total;
+}
+
+function updateHandDisplay() {
+    const [playerFirst, playerSecond] = playerHand;
+    const [dealerFirst, dealerHidden] = dealerHand;
+
+    playerCardFront.textContent = playerFirst || '自分だけ表';
+    playerCardBack.textContent = playerSecond || '自分だけ裏';
+    dealerCardFront.textContent = dealerFirst || '表';
+    dealerCardBack.textContent = dealerHidden || '裏';
+
+    playerScore.textContent = playerHand.length ? calculateTotal(playerHand) : '--';
+    dealerScore.textContent = dealerHand.length ? calculateTotal([dealerFirst]) : '--';
+}
+
 function startGame(betAmount) {
     console.log('ゲーム開始。掛け金: ¥' + betAmount);
-    // ここにゲームロジックを実装します
+    playerName.textContent = 'プレイヤー';
+    playerHand = [randomCard(), randomCard()];
+    dealerHand = [randomCard(), '裏'];
+    updateHandDisplay();
 }
+
+settingsButton.addEventListener('click', function() {
+    alert('設定を開きます。まだ実装されていません。');
+});
+
+hitButton.addEventListener('click', function() {
+    if (playerHand.length >= 5) {
+        alert('これ以上カードは引けません。');
+        return;
+    }
+    playerHand.push(randomCard());
+    updateHandDisplay();
+});
+
+standButton.addEventListener('click', function() {
+    alert('スタンドしました。ディーラのターンへ進みます。');
+});
 
 // 初期化
 window.addEventListener('load', function() {

@@ -1,69 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #228B22 0%, #006400 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    width: 100%;
-    height: 100vh;
-    position: relative;
-}
-
-/* スクリーン管理 */
-.screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
-.screen.active {
-    display: flex;
-}
-
-/* ============ ゲームスタート画面 ============ */
-#startScreen {
-    background: linear-gradient(135deg, #228B22 0%, #006400 100%);
-}
-
-.start-button {
-    width: 250px;
-    height: 80px;
-    font-size: 28px;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-.start-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-}
-
-.start-button:active {
-    transform: scale(0.98);
-}
-
 /* ============ 掛け金決定パネル ============ */
 #bettingScreen {
     background: rgba(0, 0, 0, 0.5);
@@ -72,9 +6,9 @@ body {
 
 .betting-panel {
     width: 50%;
-    height: 50%;
+    height: 40%;
     min-width: 350px;
-    min-height: 300px;
+    min-height: 240px;
     background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
     border: 3px solid #666;
     border-radius: 15px;
@@ -198,6 +132,7 @@ body {
     text-align: center;
     border: 2px solid #999;
     border-radius: 8px;
+    margin-bottom: 20px;
     background: white;
     color: #333;
     cursor: pointer;
@@ -245,6 +180,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     align-self: center;
+    margin-top: 20px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
@@ -256,38 +192,4 @@ body {
 
 .confirm-button:active {
     transform: scale(0.98);
-}
-
-/* ============ レスポンシブ対応 ============ */
-@media (max-width: 768px) {
-    .betting-panel {
-        width: 85%;
-        height: 60%;
-        min-width: 280px;
-        padding: 20px;
-    }
-
-    .betting-panel h2 {
-        font-size: 20px;
-    }
-
-    .start-button {
-        width: 200px;
-        height: 60px;
-        font-size: 22px;
-    }
-
-    .bet-spinner {
-        width: 100px;
-        height: 45px;
-        font-size: 20px;
-    }
-
-    .current-bet {
-        font-size: 16px;
-    }
-
-    #currentBetAmount {
-        font-size: 24px;
-    }
 }
