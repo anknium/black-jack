@@ -182,21 +182,21 @@ function updateUI(reveal) {
     const dHandDiv = document.getElementById("dealer-hand");
     
     // プレイヤーの手札表示
-    pHandDiv.innerHTML = playerHand.map(c => 
-        `<div class="card">${c.display}</div>`
+    pHandDiv.innerHTML = playerHand.map((c, i) => 
+        `<div class="card" style="animation-delay: ${i * 0.15}s">${c.display}</div>`
     ).join("");
     
     // ディーラーの手札表示
     if (reveal) {
-        dHandDiv.innerHTML = dealerHand.map(c => 
-            `<div class="card">${c.display}</div>`
+        dHandDiv.innerHTML = dealerHand.map((c, i) => 
+            `<div class="card" style="animation-delay: ${i * 0.15}s">${c.display}</div>`
         ).join("");
         document.getElementById("dealer-score").innerText = calculateScore(dealerHand);
     } else {
         // 1枚目は表示、2枚目は伏せる
         dHandDiv.innerHTML = `
-            <div class="card">${dealerHand[0].display}</div>
-            <div class="card back"></div>
+            <div class="card" style="animation-delay: 0s">${dealerHand[0].display}</div>
+            <div class="card back" style="animation-delay: 0.15s"></div>
         `;
         document.getElementById("dealer-score").innerText = "?";
     }
@@ -223,3 +223,140 @@ function resetGame() {
     document.getElementById("stand-btn").disabled = true;
     document.getElementById("double-btn").disabled = true;
 }
+
+// 設定画面スクリプト
+document.addEventListener('DOMContentLoaded', function() {
+    // スライダーの値更新
+    const sliders = ['volume', 'se', 'bgm', 'ambient', 'voice'];
+    
+    sliders.forEach(id => {
+        const slider = document.getElementById(id);
+        const valueDisplay = document.getElementById(id + '-value');
+        
+        if (slider && valueDisplay) {
+            slider.addEventListener('input', function() {
+                valueDisplay.textContent = this.value;
+            });
+        }
+    });
+    
+    // ダークモード切り替え
+    const darkModeToggle = document.getElementById('dark-mode');
+    
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    }
+    
+    // 保存ボタン
+    const saveBtn = document.getElementById('save-btn');
+    
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            saveSettings();
+        });
+    }
+    
+    // キャンセルボタン
+    const cancelBtn = document.getElementById('cancel-btn');
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            window.history.back();
+        });
+    }
+    
+    // キーコンフィグボタン
+    const keyConfigBtn = document.getElementById('key-config-btn');
+    
+    if (keyConfigBtn) {
+        keyConfigBtn.addEventListener('click', function() {
+            alert('キーコンフィグ画面を開きます');
+        });
+    }
+    
+    // 設定保存関数
+    function saveSettings() {
+        const settings = {
+            volume: document.getElementById('volume').value,
+            se: document.getElementById('se').value,
+            bgm: document.getElementById('bgm').value,
+            ambient: document.getElementById('ambient').value,
+            voice: document.getElementById('voice').value,
+            windowDisplay: document.getElementById('window-display').value,
+            subtitles: document.getElementById('subtitles').checked,
+            cardSize: document.getElementById('card-size').value,
+            darkMode: document.getElementById('dark-mode').checked
+        };
+        
+        localStorage.setItem('gameSettings', JSON.stringify(settings));
+        
+        alert('設定を保存しました');
+    }
+    
+    // 保存された設定を読み込む
+    function loadSettings() {
+        const savedSettings = localStorage.getItem('gameSettings');
+        
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            
+            const volumeEl = document.getElementById('volume');
+            const seEl = document.getElementById('se');
+            const bgmEl = document.getElementById('bgm');
+            const ambientEl = document.getElementById('ambient');
+            const voiceEl = document.getElementById('voice');
+            const windowDisplayEl = document.getElementById('window-display');
+            const subtitlesEl = document.getElementById('subtitles');
+            const cardSizeEl = document.getElementById('card-size');
+            const darkModeEl = document.getElementById('dark-mode');
+            
+            if (volumeEl) {
+                volumeEl.value = settings.volume;
+                const volumeValue = document.getElementById('volume-value');
+                if (volumeValue) volumeValue.textContent = settings.volume;
+            }
+            
+            if (seEl) {
+                seEl.value = settings.se;
+                const seValue = document.getElementById('se-value');
+                if (seValue) seValue.textContent = settings.se;
+            }
+            
+            if (bgmEl) {
+                bgmEl.value = settings.bgm;
+                const bgmValue = document.getElementById('bgm-value');
+                if (bgmValue) bgmValue.textContent = settings.bgm;
+            }
+            
+            if (ambientEl) {
+                ambientEl.value = settings.ambient;
+                const ambientValue = document.getElementById('ambient-value');
+                if (ambientValue) ambientValue.textContent = settings.ambient;
+            }
+            
+            if (voiceEl) {
+                voiceEl.value = settings.voice;
+                const voiceValue = document.getElementById('voice-value');
+                if (voiceValue) voiceValue.textContent = settings.voice;
+            }
+            
+            if (windowDisplayEl) windowDisplayEl.value = settings.windowDisplay;
+            if (subtitlesEl) subtitlesEl.checked = settings.subtitles;
+            if (cardSizeEl) cardSizeEl.value = settings.cardSize;
+            if (darkModeEl) {
+                darkModeEl.checked = settings.darkMode;
+                if (settings.darkMode) {
+                    document.body.classList.add('dark-mode');
+                }
+            }
+        }
+    }
+    
+    loadSettings();
+});

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>設定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Yu Gothic", "Meiryo", sans-serif;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        body.dark {
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .settings-group {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .settings-group h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            font-size: 14px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            width: 150px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4a90d9;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #4a90d9;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Select dropdown */
+        select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Button */
+        .config-button {
+            padding: 10px 20px;
+            background: #4a90d9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .config-button:hover {
+            background: #357abd;
+        }
+
+        /* Dark mode specific */
+        body.dark .settings-group {
+            background: #252540;
+        }
+
+        body.dark input[type="range"] {
+            background: #444;
+        }
+
+        body.dark select {
+            background: #333;
+            border-color: #555;
+        }
+
+        body.dark .config-button {
+            background: #5a9fd9;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--card-bg);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        :root {
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --input-bg: #fff;
+            --text-color: #333;
+        }
+
+        body.dark {
+            --card-bg: #252540;
+            --border-color: #444;
+            --input-bg: #333;
+            --text-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body class="light">
+    <button class="close-btn" onclick="window.close()">×</button>
+    
+    <div class="container">
+        <h1>設定</h1>
+
+        <!-- 音量グループ -->
+        <div class="settings-group">
+            <h2>オーディオ</h2>
+            
+            <div class="setting-item">
+                <span class="setting-label">音量</span>
+                <div class="slider-container">
+                    <input type="range" id="volume" min="0" max="100" value="80" oninput="updateValue(this)">
+                    <span class="slider-value" id="volume-value">80</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">SE</span>
+                <div class="slider-container">
+                    <input type="range" id="se" min="0" max="100" value="70" oninput="updateValue(this)">
+                    <span class="slider-value" id="se-value">70</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">BGM</span>
+                <div class="slider-container">
+                    <input type="range" id="bgm" min="0" max="100" value="60" oninput="updateValue(this)">
+                    <span class="slider-value" id="bgm-value">60</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">環境音</span>
+                <div class="slider-container">
+                    <input type="range" id="ambient" min="0" max="100" value="50" oninput="updateValue(this)">
+                    <span class="slider-value" id="ambient-value">50</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">ボイス</span>
+                <div class="slider-container">
+                    <input type="range" id="voice" min="0" max="100" value="75" oninput="updateValue(this)">
+                    <span class="slider-value" id="voice-value">75</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作グループ -->
+        <div class="settings-group">
+            <h2>操作</h2>
+
+            <div class="setting-item">
+                <span class="setting-label">キーコンフィグ</span>
+                <button class="config-button" onclick="openKeyConfig()">設定</button>
+            </div>
+        </div>
+
+        <!-- 表示グループ -->
+        <div class="settings-group">
+            <h2>表示</h2>
+
+            <div class="setting-item">
+                <span class="setting-label">ウィンドウ表示</span>
+                <select id="window-display" onchange="changeWindowDisplay()">
+                    <option value="windowed">ウィンドウ</option>
+                    <option value="fullscreen">フルスクリーン</option>
+                    <option value="borderless">ボーダーレス</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">字幕</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="subtitles" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">カードサイズ</span>
+                <select id="card-size" onchange="changeCardSize()">
+                    <option value="small">小</option>
+                    <option value="medium" selected>中</option>
+                    <option value="large">大</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">ダークモード</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // スライダーの値を表示更新
+        function updateValue(slider) {
+            const valueSpan = document.getElementById(slider.id + '-value');
+            if (valueSpan) {
+                valueSpan.textContent = slider.value;
+            }
+            saveSettings();
+        }
+
+        // ダークモード切り替え
+        function toggleDarkMode() {
+            const isDark = document.getElementById('dark-mode').checked;
+            document.body.classList.remove('light', 'dark');
+            document.body.classList.add(isDark ? 'dark' : 'light');
+            saveSettings();
+        }
+
+        // ウィンドウ表示変更
+        function changeWindowDisplay() {
+            const mode = document.getElementById('window-display').value;
+            console.log('ウィンドウ表示:', mode);
+            saveSettings();
+        }
+
+        // カードサイズ変更
+        function changeCardSize() {
+            const size = document.getElementById('card-size').value;
+            console.log('カードサイズ:', size);
+            saveSettings();
+        }
+
+        // キーコンフィグ画面へ
+        function openKeyConfig() {
+            alert('キーコンフィグ画面を開きます');
+        }
+
+        // 設定保存
+        function saveSettings() {
+            const settings = {
+                volume: document.getElementById('volume').value,
+                se: document.getElementById('se').value,
+                bgm: document.getElementById('bgm').value,
+                ambient: document.getElementById('ambient').value,
+                voice: document.getElementById('voice').value,
+                windowDisplay: document.getElementById('window-display').value,
+                subtitles: document.getElementById('subtitles').checked,
+                cardSize: document.getElementById('card-size').value,
+                darkMode: document.getElementById('dark-mode').checked
+            };
+            localStorage.setItem('gameSettings', JSON.stringify(settings));
+            console.log('設定を保存しました:', settings);
+        }
+
+        // 設定読み込み
+        function loadSettings() {
+            const saved = localStorage.getItem('gameSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.getElementById('volume').value = settings.volume || 80;
+                document.getElementById('se').value = settings.se || 70;
+                document.getElementById('bgm').value = settings.bgm || 60;
+                document.getElementById('ambient').value = settings.ambient || 50;
+                document.getElementById('voice').value = settings.voice || 75;
+                document.getElementById('window-display').value = settings.windowDisplay || 'windowed';
+                document.getElementById('subtitles').checked = settings.subtitles !== false;
+                document.getElementById('card-size').value = settings.cardSize || 'medium';
+                document.getElementById('dark-mode').checked = settings.darkMode || false;
+
+                // 表示更新
+                document.getElementById('volume-value').textContent = settings.volume || 80;
+                document.getElementById('se-value').textContent = settings.se || 70;
+                document.getElementById('bgm-value').textContent = settings.bgm || 60;
+                document.getElementById('ambient-value').textContent = settings.ambient || 50;
+                document.getElementById('voice-value').textContent = settings.voice || 75;
+
+                // ダークモード適用
+                if (settings.darkMode) {
+                    document.body.classList.remove('light', 'dark');
+                    document.body.classList.add('dark');
+                }
+            }
+        }
+
+        // ページ読み込み時に設定を読み込み
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>
