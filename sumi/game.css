@@ -219,6 +219,42 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+<<<<<<< HEAD
+.dealer-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    grid-column: 1 / 3;
+    grid-row: 1;
+    justify-self: center;
+}
+
+.deck-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+}
+
+.player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    padding: 32px 0 0;
+    margin-top: auto;
+}
+
+=======
+>>>>>>> cae055471f860f2b6384810356803d7d45dccee9
 .info-pill {
     padding: 8px 12px;
     border-radius: 4px;

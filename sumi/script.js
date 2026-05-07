@@ -24,11 +24,17 @@ const seValueDisplay = document.getElementById('seVolumeValue');
 
 // ゲームアクション用
 const hitButton = document.getElementById('hitButton');
-const standButton = document.getElementById('standButton');
+const standButton = document.getElementById('standButton');const dealerScore = document.getElementById('dealerScore');
+const playerScore = document.getElementById('playerScore');
+const playerName = document.getElementById('playerName');
+const dealerCardFlip = document.getElementById('dealerCardFlip');
+const dealerCardFront = document.getElementById('dealerCardFront');
+const dealerCardBack = document.getElementById('dealerCardBack');
+const playerCardFront = document.getElementById('playerCardFront');
+const playerCardBack = document.getElementById('playerCardBack');
 const dealerScoreDisplay = document.getElementById('dealerScore');
 const playerScoreDisplay = document.getElementById('playerScore');
 const playerNameDisplay = document.getElementById('playerName');
-
 // カード表示エリア
 const dealerCardsArea = document.querySelector('.dealer-cards');
 const playerCardsArea = document.querySelector('.player-cards');
@@ -39,6 +45,7 @@ const keySpans = document.querySelectorAll('.key-list span');
 // ============ 2. データ管理 (状態) ============
 let playerHand = [];
 let dealerHand = [];
+let dealerHiddenRevealed = false;
 let isGameOver = false;
 let isAssigningKey = null; // 現在キー設定中のアクション名
 
@@ -140,6 +147,9 @@ function calculateTotal(hand) {
     return total;
 }
 
+function revealDealerCard() {
+    dealerHiddenRevealed = true;
+    updateHandDisplay();
 function createCardElement(card, isBack = false) {
     const cardDiv = document.createElement('div');
     cardDiv.className = isBack ? 'card card-back' : 'card card-front';
@@ -152,6 +162,17 @@ function updateHandDisplay() {
     playerCardsArea.innerHTML = '';
     playerHand.forEach(card => playerCardsArea.appendChild(createCardElement(card)));
 
+    playerCardFront.textContent = playerFirst || '自分だけ表';
+    playerCardBack.textContent = playerSecond || '自分だけ裏';
+    dealerCardFront.textContent = dealerFirst || '表';
+
+    if (dealerHiddenRevealed) {
+        dealerCardBack.textContent = dealerHidden;
+        dealerCardFlip.classList.add('flipped');
+    } else {
+        dealerCardBack.textContent = '裏';
+        dealerCardFlip.classList.remove('flipped');
+    }
     // ディーラーカード
     dealerCardsArea.innerHTML = '';
     dealerHand.forEach((card, index) => {
@@ -168,6 +189,8 @@ function startGame(betAmount) {
     playerNameDisplay.textContent = 'プレイヤー';
     
     playerHand = [randomCard(), randomCard()];
+    dealerHand = [randomCard(), randomCard()];
+    dealerHiddenRevealed = false;
     dealerHand = [randomCard(), '裏'];
     
     updateHandDisplay();
@@ -191,6 +214,8 @@ hitButton.addEventListener('click', function() {
 
 // スタンドボタン
 standButton.addEventListener('click', function() {
+    revealDealerCard();
+    alert('スタンドしました。ディーラのターンへ進みます。');
     if (isGameOver) return;
     alert('スタンドしました。ディーラーのターンへ...');
     // ここでディーラーのAIロジックを呼び出す
