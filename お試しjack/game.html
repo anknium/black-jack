@@ -2,28 +2,78 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Blackjack JS</title>
+    <title>Grand Casino Blackjack</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="casino-table">
-        <h1 id="message">ベットして開始してください</h1>
-
-        <div class="area">
-            <h3>Dealer (Score: <span id="dealer-score">?</span>)</h3>
-            <div id="dealer-hand" class="hand"></div>
+    <div class="game-container">
+        <!-- ディーラーエリア -->
+        <div class="dealer-section">
+            <div class="dealer-label">ディーラー</div>
+            <div id="dealer-hand" class="dealer-cards"></div>
+            <div class="dealer-score"><span id="dealer-score-val">-</span></div>
         </div>
 
-        <div class="area">
-            <h3>Player (Score: <span id="player-score">0</span>)</h3>
-            <div id="player-hand" class="hand"></div>
+        <!-- メインゲームエリア -->
+        <div class="main-game-area">
+            <!-- プレイヤー1（左） -->
+            <div class="player-seat left-player">
+                <div class="player-info">
+                    <div class="player-name">名前</div>
+                    <div class="player-chips">
+                        <span class="chip-icon">チップ</span>
+                        <span id="chips-p1">1000</span>
+                    </div>
+                </div>
+                <div id="player1-hand" class="player-cards"></div>
+                <div class="player-score" id="score-p1">-</div>
+            </div>
+
+            <!-- プレイヤー2（中央） -->
+            <div class="player-seat center-player">
+                <div class="player-info">
+                    <div class="player-name">名前</div>
+                    <div class="player-chips">
+                        <span class="chip-icon">チップ</span>
+                        <span id="chips-p2">1000</span>
+                    </div>
+                </div>
+                <div id="player2-hand" class="player-cards"></div>
+                <div class="player-score" id="score-p2">-</div>
+            </div>
+
+            <!-- プレイヤー3（右） -->
+            <div class="player-seat right-player">
+                <div class="player-info">
+                    <div class="player-name">名前</div>
+                    <div class="player-chips">
+                        <span class="chip-icon">チップ</span>
+                        <span id="chips-p3">1000</span>
+                    </div>
+                </div>
+                <div id="player3-hand" class="player-cards"></div>
+                <div class="player-score" id="score-p3">-</div>
+            </div>
         </div>
 
-        <div class="controls">
-            <button onclick="startGame()">ゲーム開始</button>
-            <button id="hit-btn" onclick="hit()" disabled>ヒット</button>
-            <button id="stand-btn" onclick="stand()" disabled>スタンド</button>
-            <p>所持チップ: <span id="chips">1000</span></p>
+        <!-- トグルボタン（矢印） -->
+        <div class="arrow-toggle" id="toggle-btn">→</div>
+
+        <!-- スライドメニュー（統計エリア） -->
+        <div class="slide-menu" id="slide-menu">
+            <div class="stats-area">
+                <div class="stats-label">勝率　何パーセント</div>
+                <div class="stats-content">
+                    <span id="win-rate">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <button id="hit-btn" class="btn-action" onclick="hit()" disabled>HIT</button>
+            <button id="stand-btn" class="btn-action" onclick="stand()" disabled>STAND</button>
+            <button id="deal-btn" class="btn-deal" onclick="startGame()">DEAL</button>
         </div>
     </div>
 
