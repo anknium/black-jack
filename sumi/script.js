@@ -9,37 +9,25 @@ const betSpinner = document.getElementById('betSpinner');
 const currentBetAmount = document.getElementById('currentBetAmount');
 const confirmButton = document.getElementById('confirmButton');
 
-// 設定画面用
 const settingsButton = document.getElementById('settingsButton');
 const settingsOverlay = document.getElementById('settingsOverlay');
 const closeSettings = document.getElementById('closeSettings');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 
-// 音量設定用
 const bgmSlider = document.getElementById('bgmVolume');
 const bgmValueDisplay = document.getElementById('bgmVolumeValue');
 const seSlider = document.getElementById('seVolume');
 const seValueDisplay = document.getElementById('seVolumeValue');
 
-// ゲームアクション用
 const hitButton = document.getElementById('hitButton');
-const standButton = document.getElementById('standButton');const dealerScore = document.getElementById('dealerScore');
-const playerScore = document.getElementById('playerScore');
-const playerName = document.getElementById('playerName');
-const dealerCardFlip = document.getElementById('dealerCardFlip');
-const dealerCardFront = document.getElementById('dealerCardFront');
-const dealerCardBack = document.getElementById('dealerCardBack');
-const playerCardFront = document.getElementById('playerCardFront');
-const playerCardBack = document.getElementById('playerCardBack');
+const standButton = document.getElementById('standButton');
 const dealerScoreDisplay = document.getElementById('dealerScore');
 const playerScoreDisplay = document.getElementById('playerScore');
 const playerNameDisplay = document.getElementById('playerName');
-// カード表示エリア
+
 const dealerCardsArea = document.querySelector('.dealer-cards');
 const playerCardsArea = document.querySelector('.player-cards');
-
-// キーバインド表示要素（設定画面の<span>）
 const keySpans = document.querySelectorAll('.key-list span');
 
 // ============ 2. データ管理 (状態) ============
@@ -47,9 +35,8 @@ let playerHand = [];
 let dealerHand = [];
 let dealerHiddenRevealed = false;
 let isGameOver = false;
-let isAssigningKey = null; // 現在キー設定中のアクション名
+let isAssigningKey = null;
 
-// デフォルトのキーバインド
 let keyBinds = {
     hit: 'h',
     stand: 's',
@@ -60,25 +47,19 @@ const cardPool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
 
 // ============ 3. キーバインド設定ロジック ============
 
-// 画面上のキー表示を最新の状態に更新する関数
 function updateKeyDisplay() {
     keySpans.forEach(span => {
         const actionText = span.parentElement.textContent;
         if (actionText.includes('ヒット')) span.textContent = keyBinds.hit.toUpperCase();
         if (actionText.includes('スタンド')) span.textContent = keyBinds.stand.toUpperCase();
         if (actionText.includes('設定')) span.textContent = keyBinds.settings === 'Escape' ? 'ESC' : keyBinds.settings.toUpperCase();
-        
         span.style.cursor = 'pointer';
     });
 }
 
-// 設定画面のキーをクリックした時の処理
 keySpans.forEach(span => {
     span.addEventListener('click', function() {
-        // すべての選択状態を解除
         keySpans.forEach(s => s.style.background = '#333');
-        
-        // 選択された項目を強調
         this.style.background = '#ff8b3d';
         this.textContent = '...';
         
@@ -89,9 +70,7 @@ keySpans.forEach(span => {
     });
 });
 
-// キー入力イベント（ゲーム操作 ＆ キー割り当て）
 window.addEventListener('keydown', function(e) {
-    // A. キー割り当て中の場合
     if (isAssigningKey) {
         e.preventDefault();
         keyBinds[isAssigningKey] = e.key;
@@ -100,20 +79,13 @@ window.addEventListener('keydown', function(e) {
         return;
     }
 
-    // B. 通常のゲーム操作
     const isSettingsOpen = settingsOverlay.classList.contains('active');
 
-    // 設定画面を開く/閉じる (設定キー)
     if (e.key === keyBinds.settings) {
-        if (isSettingsOpen) {
-            settingsOverlay.classList.remove('active');
-        } else {
-            settingsOverlay.classList.add('active');
-        }
+        settingsOverlay.classList.toggle('active');
         return;
     }
 
-    // ゲーム中の操作（設定画面が閉じている時のみ有効）
     if (!isSettingsOpen && !isGameOver) {
         if (e.key.toLowerCase() === keyBinds.hit.toLowerCase()) {
             hitButton.click();
@@ -136,9 +108,8 @@ function cardValue(card) {
 }
 
 function calculateTotal(hand) {
-    const validCards = hand.filter(card => card !== '裏');
-    let total = validCards.reduce((sum, card) => sum + cardValue(card), 0);
-    let aceCount = validCards.filter(card => card === 'A').length;
+    let total = hand.reduce((sum, card) => sum + cardValue(card), 0);
+    let aceCount = hand.filter(card => card === 'A').length;
 
     while (total > 21 && aceCount > 0) {
         total -= 10;
@@ -147,58 +118,51 @@ function calculateTotal(hand) {
     return total;
 }
 
-function revealDealerCard() {
-    dealerHiddenRevealed = true;
-    updateHandDisplay();
-function createCardElement(card, isBack = false) {
+function createCardElement(card, isHidden = false) {
     const cardDiv = document.createElement('div');
-    cardDiv.className = isBack ? 'card card-back' : 'card card-front';
-    cardDiv.textContent = isBack ? '裏' : card;
+    cardDiv.className = isHidden ? 'card card-back' : 'card card-front';
+    cardDiv.textContent = isHidden ? '?' : card;
     return cardDiv;
 }
 
 function updateHandDisplay() {
-    // プレイヤーカード
+    // プレイヤーカード表示
     playerCardsArea.innerHTML = '';
-    playerHand.forEach(card => playerCardsArea.appendChild(createCardElement(card)));
+    playerHand.forEach(card => {
+        playerCardsArea.appendChild(createCardElement(card));
+    });
+    playerScoreDisplay.textContent = calculateTotal(playerHand);
 
-    playerCardFront.textContent = playerFirst || '自分だけ表';
-    playerCardBack.textContent = playerSecond || '自分だけ裏';
-    dealerCardFront.textContent = dealerFirst || '表';
-
-    if (dealerHiddenRevealed) {
-        dealerCardBack.textContent = dealerHidden;
-        dealerCardFlip.classList.add('flipped');
-    } else {
-        dealerCardBack.textContent = '裏';
-        dealerCardFlip.classList.remove('flipped');
-    }
-    // ディーラーカード
+    // ディーラーカード表示
     dealerCardsArea.innerHTML = '';
     dealerHand.forEach((card, index) => {
-        dealerCardsArea.appendChild(createCardElement(card, card === '裏'));
+        // 2枚目かつ未公開なら隠す
+        const isHidden = (index === 1 && !dealerHiddenRevealed);
+        dealerCardsArea.appendChild(createCardElement(card, isHidden));
     });
 
-    playerScoreDisplay.textContent = calculateTotal(playerHand);
-    dealerScoreDisplay.textContent = calculateTotal(dealerHand);
+    // ディーラースコア表示
+    if (dealerHiddenRevealed) {
+        dealerScoreDisplay.textContent = calculateTotal(dealerHand);
+    } else {
+        dealerScoreDisplay.textContent = cardValue(dealerHand[0]);
+    }
 }
 
 function startGame(betAmount) {
     console.log('ゲーム開始。掛け金: ¥' + betAmount);
     isGameOver = false;
+    dealerHiddenRevealed = false;
     playerNameDisplay.textContent = 'プレイヤー';
     
     playerHand = [randomCard(), randomCard()];
-    dealerHand = [randomCard(), randomCard()];
-    dealerHiddenRevealed = false;
-    dealerHand = [randomCard(), '裏'];
+    dealerHand = [randomCard(), randomCard()]; 
     
     updateHandDisplay();
 }
 
 // ============ 5. イベントリスナー ============
 
-// ヒットボタン
 hitButton.addEventListener('click', function() {
     if (isGameOver) return;
     if (playerHand.length >= 5) return alert('5枚が上限です');
@@ -212,16 +176,36 @@ hitButton.addEventListener('click', function() {
     }
 });
 
-// スタンドボタン
 standButton.addEventListener('click', function() {
-    revealDealerCard();
-    alert('スタンドしました。ディーラのターンへ進みます。');
     if (isGameOver) return;
-    alert('スタンドしました。ディーラーのターンへ...');
-    // ここでディーラーのAIロジックを呼び出す
+    
+    dealerHiddenRevealed = true;
+    updateHandDisplay();
+
+    // ディーラーの思考ロジック（17以上になるまで引く）
+    let dTotal = calculateTotal(dealerHand);
+    while (dTotal < 17) {
+        dealerHand.push(randomCard());
+        dTotal = calculateTotal(dealerHand);
+    }
+    updateHandDisplay();
+
+    const pTotal = calculateTotal(playerHand);
+    
+    setTimeout(() => {
+        if (dTotal > 21) {
+            alert(`ディーラーがバースト（${dTotal}）。あなたの勝ちです！`);
+        } else if (pTotal > dTotal) {
+            alert(`あなたの勝ち！ (Player: ${pTotal} / Dealer: ${dTotal})`);
+        } else if (pTotal < dTotal) {
+            alert(`あなたの負けです。 (Player: ${pTotal} / Dealer: ${dTotal})`);
+        } else {
+            alert(`引き分け (Push) です。 (Score: ${pTotal})`);
+        }
+        isGameOver = true;
+    }, 300);
 });
 
-// 賭け金スライダー連動
 betSlider.addEventListener('input', function() {
     betSpinner.value = this.value;
     currentBetAmount.textContent = this.value;
@@ -232,15 +216,14 @@ betSpinner.addEventListener('input', function() {
     currentBetAmount.textContent = this.value;
 });
 
-// 音量スライダー
 bgmSlider.addEventListener('input', function() {
     bgmValueDisplay.textContent = this.value;
 });
+
 seSlider.addEventListener('input', function() {
     seValueDisplay.textContent = this.value;
 });
 
-// 画面遷移
 startButton.addEventListener('click', () => {
     startScreen.classList.remove('active');
     bettingScreen.classList.add('active');
@@ -252,15 +235,13 @@ confirmButton.addEventListener('click', () => {
     startGame(betSpinner.value);
 });
 
-// 設定画面
 settingsButton.addEventListener('click', () => settingsOverlay.classList.add('active'));
 closeSettings.addEventListener('click', () => {
     settingsOverlay.classList.remove('active');
-    isAssigningKey = null; // 割り当て中断
+    isAssigningKey = null;
     updateKeyDisplay();
 });
 
-// タブ切り替え
 tabButtons.forEach(btn => {
     btn.addEventListener('click', function() {
         const targetTab = this.dataset.tab;
@@ -271,7 +252,6 @@ tabButtons.forEach(btn => {
     });
 });
 
-// 初期化
 window.addEventListener('load', () => {
     updateKeyDisplay();
     currentBetAmount.textContent = betSlider.value;

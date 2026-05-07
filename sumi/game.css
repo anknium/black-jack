@@ -229,7 +229,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-<<<<<<< HEAD
 .dealer-area {
     display: flex;
     flex-direction: column;
@@ -263,8 +262,7 @@
     margin-top: auto;
 }
 
-=======
->>>>>>> cae055471f860f2b6384810356803d7d45dccee9
+
 .info-pill {
     padding: 8px 12px;
     border-radius: 4px;
