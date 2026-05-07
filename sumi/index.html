@@ -10,18 +10,15 @@
 </head>
 <body>
     <div class="container">
-        <!-- ゲームスタートボタン -->
         <div id="startScreen" class="screen active">
             <button id="startButton" class="start-button">ゲームスタート</button>
         </div>
 
-        <!-- 掛け金決定パネル -->
         <div id="bettingScreen" class="screen">
             <div class="betting-panel">
                 <h2>賭け金を決めてください</h2>
                 
                 <div class="betting-controls">
-                    <!-- スライダー -->
                     <div class="slider-container">
                         <label for="betSlider">スライダー:</label>
                         <input 
@@ -40,7 +37,6 @@
                         </div>
                     </div>
 
-                    <!-- スピナー（矢印付き数値入力） -->
                     <div class="spinner-container">
                         <label for="betSpinner">金額:</label>
                         <input 
@@ -55,18 +51,15 @@
                     </div>
                 </div>
 
-                <!-- 現在の掛け金表示 -->
                 <div class="current-bet">
                     <span>現在の掛け金: ¥</span>
                     <span id="currentBetAmount">100</span>
                 </div>
 
-                <!-- 確定ボタン -->
                 <button id="confirmButton" class="confirm-button">確定</button>
             </div>
         </div>
 
-        <!-- ゲーム画面 -->
         <div id="gameScreen" class="screen">
             <div class="game-board">
                 <button id="settingsButton" class="settings-button">設定</button>
@@ -109,6 +102,43 @@
                         <button id="hitButton" class="game-control">ヒット</button>
                         <button id="standButton" class="game-control secondary">スタンド</button>
                     </div>
+                </div>
+            </div>
+
+            <div id="settingsOverlay" class="settings-overlay">
+                <div class="settings-modal">
+                    <aside class="settings-sidebar">
+                        <button class="tab-btn active" data-tab="volume">音量</button>
+                        <button class="tab-btn" data-tab="keybind">キーバインド</button>
+                        <button id="closeSettings" class="close-btn">閉じる</button>
+                    </aside>
+                    <main class="settings-main">
+                        <div id="volume" class="tab-content active">
+                            <h3>音量設定</h3>
+                            <div class="setting-item">
+                                <label>BGM</label>
+                                <div class="volume-control-row">
+                                    <input type="range" id="bgmVolume" min="0" max="100" value="50">
+                                    <span id="bgmVolumeValue" class="volume-number">50</span>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label>SE</label>
+                                <div class="volume-control-row">
+                                    <input type="range" id="seVolume" min="0" max="100" value="70">
+                                    <span id="seVolumeValue" class="volume-number">70</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="keybind" class="tab-content">
+                            <h3>キーバインド</h3>
+                            <ul class="key-list">
+                                <li>ヒット: <span>H</span></li>
+                                <li>スタンド: <span>S</span></li>
+                                <li>設定: <span>Esc</span></li>
+                            </ul>
+                        </div>
+                    </main>
                 </div>
             </div>
         </div>
