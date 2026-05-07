@@ -56,6 +56,7 @@ const standButton = document.getElementById('standButton');
 const dealerScore = document.getElementById('dealerScore');
 const playerScore = document.getElementById('playerScore');
 const playerName = document.getElementById('playerName');
+const dealerCardFlip = document.getElementById('dealerCardFlip');
 const dealerCardFront = document.getElementById('dealerCardFront');
 const dealerCardBack = document.getElementById('dealerCardBack');
 const playerCardFront = document.getElementById('playerCardFront');
@@ -64,6 +65,7 @@ const playerCardBack = document.getElementById('playerCardBack');
 const cardPool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
 let playerHand = [];
 let dealerHand = [];
+let dealerHiddenRevealed = false;
 
 function randomCard() {
     const value = cardPool[Math.floor(Math.random() * cardPool.length)];
@@ -91,6 +93,11 @@ function calculateTotal(hand) {
     return total;
 }
 
+function revealDealerCard() {
+    dealerHiddenRevealed = true;
+    updateHandDisplay();
+}
+
 function updateHandDisplay() {
     const [playerFirst, playerSecond] = playerHand;
     const [dealerFirst, dealerHidden] = dealerHand;
@@ -98,7 +105,14 @@ function updateHandDisplay() {
     playerCardFront.textContent = playerFirst || '自分だけ表';
     playerCardBack.textContent = playerSecond || '自分だけ裏';
     dealerCardFront.textContent = dealerFirst || '表';
-    dealerCardBack.textContent = dealerHidden || '裏';
+
+    if (dealerHiddenRevealed) {
+        dealerCardBack.textContent = dealerHidden;
+        dealerCardFlip.classList.add('flipped');
+    } else {
+        dealerCardBack.textContent = '裏';
+        dealerCardFlip.classList.remove('flipped');
+    }
 
     playerScore.textContent = playerHand.length ? calculateTotal(playerHand) : '--';
     dealerScore.textContent = dealerHand.length ? calculateTotal([dealerFirst]) : '--';
@@ -108,7 +122,8 @@ function startGame(betAmount) {
     console.log('ゲーム開始。掛け金: ¥' + betAmount);
     playerName.textContent = 'プレイヤー';
     playerHand = [randomCard(), randomCard()];
-    dealerHand = [randomCard(), '裏'];
+    dealerHand = [randomCard(), randomCard()];
+    dealerHiddenRevealed = false;
     updateHandDisplay();
 }
 
@@ -126,6 +141,7 @@ hitButton.addEventListener('click', function() {
 });
 
 standButton.addEventListener('click', function() {
+    revealDealerCard();
     alert('スタンドしました。ディーラのターンへ進みます。');
 });
 
